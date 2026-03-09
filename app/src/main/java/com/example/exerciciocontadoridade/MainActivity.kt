@@ -53,29 +53,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun ContadorScreen(modifier: Modifier = Modifier) {
-
-
-
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .background(Color.White)
-            .fillMaxSize()
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            InfoInicial()
-            BtnRow()
-        }
-
-    }
-
-}
 
 @Composable
 fun InfoInicial(modifier: Modifier = Modifier) {
@@ -94,88 +71,100 @@ fun InfoInicial(modifier: Modifier = Modifier) {
             text = "Aperte os botões para informar sua idade",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            )
+        )
     }
 }
 
 @Composable
-fun BtnRow(modifier: Modifier = Modifier) {
+fun ContadorScreen(modifier: Modifier = Modifier) {
+    var idade by remember { mutableStateOf(0) }
 
-    var contador by remember {
-        mutableStateOf(0)
-    }
-        Text(
-            text = contador.toString(),
-            fontSize = 32.sp,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+    val status = if (idade >= 18) "Maior" else "Menor"
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        CabecalhoContador()
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        DisplayIdade(valor = idade)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PainelControles(
+            onIncrementar = { if (idade < 120) idade++ },
+            onDecrementar = { if (idade > 0) idade-- }
         )
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Button(
-                onClick = {
-                    if (contador > 0) {
-                        contador -= 1
-                    }
 
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0, 174, 255, 244),
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text(
-                    text = "-",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.W500
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Button(
-                onClick = {
-                    if (contador < 180) {
-                        contador += 1
-                    }
-                    contador += 1
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0, 174, 255, 244),
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text(
-                    text = "+",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.W500
-                )
-            }
-        }
-        var resposta = ""
-        if (contador > 18) {
-            resposta = "Maior"
-        } else {
-            resposta = "Menor"
-        }
-    Spacer(modifier = Modifier.height(16.dp))
-    RespostaRow(resposta = resposta)
+        Spacer(modifier = Modifier.height(24.dp))
+
+        RodapeStatus(status = status)
     }
-
+}
 
 @Composable
-fun RespostaRow(modifier: Modifier = Modifier, resposta: String) {
+fun CabecalhoContador() {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Qual é a sua Idade?",
+            color = Color(0xFF00AEFF),
+            fontSize = 24.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Aperte os botões para informar",
+            fontSize = 14.sp,
+            color = Color.Gray
+        )
+    }
+}
+
+@Composable
+fun DisplayIdade(valor: Int) {
+    Text(
+        text = valor.toString(),
+        fontSize = 64.sp,
+        fontWeight = FontWeight.Black,
+        color = Color.DarkGray
+    )
+}
+
+@Composable
+fun PainelControles(onIncrementar: () -> Unit, onDecrementar: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Você é ${resposta} de idade",
-            textAlign = TextAlign.Center,
-            color = Color(0, 174, 255, 244),
-            )
+        BotaoAcao(label = "-", onClick = onDecrementar)
+        BotaoAcao(label = "+", onClick = onIncrementar)
     }
+}
+
+@Composable
+fun BotaoAcao(label: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00AEFF)),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.width(80.dp).height(70.dp)
+    ) {
+        Text(text = label, fontSize = 28.sp)
+    }
+}
+
+@Composable
+fun RodapeStatus(status: String) {
+    Text(
+        text = "Você é $status de idade",
+        color = Color(0xFF00AEFF),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Medium
+    )
 }

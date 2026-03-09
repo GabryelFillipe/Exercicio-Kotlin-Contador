@@ -98,7 +98,7 @@ fun ContadorScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PainelControles(
-            onIncrementar = { if (idade < 120) idade++ },
+            onIncrementar = { if (idade < 180) idade++ },
             onDecrementar = { if (idade > 0) idade-- }
         )
 
